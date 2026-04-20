@@ -13,29 +13,41 @@
 #ifndef __NNOM_PORT_H__
 #define __NNOM_PORT_H__
 
+/* NNOM_BARE_METAL: define to suppress libc includes and printf-based logging.
+ * Used when building for bare-metal MCU targets (no OS, no libc stdio). */
+#ifndef NNOM_BARE_METAL
 #include <stdlib.h>
 #include <stdio.h>
+#endif
+
+#include <string.h>  /* always needed: memset, memcpy */
 
 /* use static memory */
 //#define NNOM_USING_STATIC_MEMORY    // enable to use built in memory allocation on a large static memory block
-                                     // must set buf using "nnom_set_static_buf()" before creating a model. 
+                                     // must set buf using "nnom_set_static_buf()" before creating a model.
 
 /* dynamic memory interfaces */
 /* when libc is not available, you shall implement the below memory interfaces (libc equivalents). */
-#ifndef NNOM_USING_STATIC_MEMORY    
-    #define nnom_malloc(n)      malloc(n)       
+#ifndef NNOM_USING_STATIC_MEMORY
+    #define nnom_malloc(n)      malloc(n)
     #define nnom_free(p)        free(p)
 #endif
 
 /* memory interface */
 /* when libc is not available, you shall implement your equivalent functions here */
-#define nnom_memset(p,v,s)        memset(p,v,s)        
-#define nnom_memcpy(dst,src,len)  memcpy(dst,src,len)  
+#define nnom_memset(p,v,s)        memset(p,v,s)
+#define nnom_memcpy(dst,src,len)  memcpy(dst,src,len)
 
 /* runtime & debug */
 #define nnom_us_get()       0       // return a microsecond timestamp
 #define nnom_ms_get()       0       // return a millisecond timestamp
-#define NNOM_LOG(...)       printf(__VA_ARGS__)
+#ifndef NNOM_LOG
+  #ifdef NNOM_BARE_METAL
+    #define NNOM_LOG(...)   /* suppressed: no printf on bare-metal */
+  #else
+    #define NNOM_LOG(...)   printf(__VA_ARGS__)
+  #endif
+#endif
 
 /* NNoM configuration */
 #define NNOM_BLOCK_NUM  	(8)		// maximum number of memory blocks, increase it when log request.   

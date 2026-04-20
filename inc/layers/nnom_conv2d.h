@@ -55,11 +55,11 @@ typedef struct _nnom_conv2d_config_t
 	nnom_tensor_t *bias;
 	nnom_qformat_param_t *output_shift;   
 	nnom_qformat_param_t *bias_shift;   
-	uint32_t filter_size;  
-	int8_t kernel_size[2];
-	int8_t stride_size[2];
-	int8_t padding_size[2];
-	int8_t dilation_size[2];
+	uint32_t filter_size;
+	uint16_t kernel_size[2];
+	uint16_t stride_size[2];
+	uint16_t padding_size[2];
+	uint16_t dilation_size[2];
 	nnom_padding_t padding_type;
 } nnom_conv2d_config_t;
 
